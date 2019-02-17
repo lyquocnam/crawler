@@ -31,13 +31,4 @@ func main() {
 
 		doc.Print()
 	}
-	//resp, err := http.Get("https://dulich.tuoitre.vn/ngam-tuyet-trang-anh-dao-o-nhat-ban-thang-2-20190212121811143.htm")
-	//if err != nil {
-	//	log.Fatalln(err)
-	//}
-	//
-	//doc, err := goquery.NewDocumentFromReader(resp.Body)
-	//if err != nil {
-	//	log.Fatalln(err)
-	//}
 }
