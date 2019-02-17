@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gocarina/gocsv"
+	"log"
 	"net/http"
 	"os"
 	"strconv"
@@ -14,6 +15,19 @@ import (
 
 type TuoiTreDocument struct {
 	Document
+}
+
+func FetchWithRelated(url string, maxArticles int) ([]TuoiTreDocument, error) {
+	result := make([]TuoiTreDocument, 0)
+	doc := TuoiTreDocument{}
+	err := doc.Fetch(url)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	result = append(result, doc)
+
+	return result, nil
 }
 
 func (doc *TuoiTreDocument) Fetch(url string) error {
@@ -43,6 +57,34 @@ func (doc *TuoiTreDocument) Fetch(url string) error {
 	doc.Author = author
 	doc.Date = DateTime{Time: *t}
 	doc.URL = url
+	doc.Content = html
+
+	return nil
+}
+
+func (doc *TuoiTreDocument) FindRelated() error {
+	if doc.Content == nil {
+		return errors.New("Vui lòng Fetch dữ liệu trước")
+	}
+
+	for _, node := range doc.Content.Find("a").Nodes {
+		ignore := false
+		for _, att := range node.Attr {
+			if att.Key == "rel" && att.Val == "nofollow" {
+				ignore = true
+			}
+		}
+
+		if !ignore {
+			for _, att := range node.Attr {
+				if att.Key == "href" {
+					// Chua loc url
+					doc.RelatedLinks = append(doc.RelatedLinks, att.Val)
+				}
+			}
+
+		}
+	}
 
 	return nil
 }

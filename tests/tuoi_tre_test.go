@@ -17,6 +17,19 @@ func TestTuoiTreFetch(t *testing.T) {
 	}
 }
 
+func TestTuoiTreFindRelated(t *testing.T) {
+	doc := models.TuoiTreDocument{}
+	err := doc.Fetch(url)
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = doc.FindRelated()
+	if err != nil {
+		t.Error(err)
+	}
+}
+
 func TestTuoiTreSaveFile(t *testing.T) {
 	doc := models.TuoiTreDocument{}
 	err := doc.Fetch(url)
